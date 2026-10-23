@@ -1,0 +1,2616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.R.A.T</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(145deg, #e8eff3 0%, #f3f6f7 48%, #e4ecef 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #17324d;
+        }
+
+        .navbar {
+            background: linear-gradient(110deg, #12314a, #1d4960);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 40px;
+            box-shadow: 0 5px 18px rgba(14, 45, 70, 0.16);
+            z-index: 10;
+        }
+
+        .navbar .brand {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+
+        .navbar .subtitle {
+            font-size: 14px;
+            color: #d5e4e9;
+            font-weight: 500;
+        }
+
+        /* SECCIÓN DE ACCESO */
+        .hero-login-container {
+            flex: 1;
+            position: relative;
+            background: radial-gradient(ellipse at 50% 42%, rgba(255,255,255,.94), rgba(232,240,243,.76) 54%, rgba(211,225,231,.85));
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            justify-items: center;
+            align-items: center;
+            padding: clamp(24px, 5vw, 72px) clamp(20px, 8vw, 120px);
+            overflow: hidden;
+        }
+
+        .login-brand {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .login-brand-image {
+            position: absolute;
+            display: block;
+            top: 50%;
+            width: min(30vw, 390px);
+            max-height: 78vh;
+            object-fit: contain;
+            transform: translateY(-50%);
+        }
+
+        .login-brand-logo {
+            left: clamp(20px, 4vw, 64px);
+            opacity: 0.78;
+            filter: blur(2.5px);
+            -webkit-mask-image: radial-gradient(ellipse, #000 48%, transparent 78%);
+            mask-image: radial-gradient(ellipse, #000 48%, transparent 78%);
+            mix-blend-mode: multiply;
+        }
+
+        .login-brand-cusiana {
+            right: clamp(20px, 4vw, 64px);
+            width: min(27vw, 350px);
+            max-height: 70vh;
+            opacity: 0.88;
+            filter: blur(2px);
+            -webkit-mask-image: radial-gradient(ellipse, #000 58%, transparent 88%);
+            mask-image: radial-gradient(ellipse, #000 58%, transparent 88%);
+            mix-blend-mode: multiply;
+            border-radius: 8px;
+            box-shadow: 0 16px 38px rgba(14, 45, 70, 0.22);
+        }
+
+        /* FORMULARIO DE ACCESO */
+        .login-card {
+            position: relative;
+            z-index: 2;
+            background-color: #fff;
+            color: #17324d;
+            width: 100%;
+            max-width: 440px;
+            padding: clamp(28px, 4vw, 44px);
+            border: 1px solid rgba(184, 202, 211, 0.8);
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(14, 45, 70, 0.18);
+            text-align: left;
+        }
+
+        .login-card h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .login-card p {
+            font-size: 14px;
+            color: #5b6e7e;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            color: #27445d;
+        }
+
+        .form-group input, 
+        .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #0044b3;
+            border-radius: 4px;
+            background: #f7fafb;
+            color: #333333;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .btn-login {
+            width: 100%;
+            background: linear-gradient(100deg, #173f5b, #1d806f);
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(100deg, #102f47, #176b60);
+            transform: translateY(-1px);
+        }
+
+        /* VISTA DEL DASHBOARD */
+        .dashboard-container {
+            max-width: 1280px;
+            margin: 30px auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        .user-bar {
+            background: linear-gradient(110deg, #fff, #f2f7f8);
+            padding: 15px 20px;
+            border: 1px solid #d7e2e6;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 22px rgba(20, 54, 77, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .card-panel {
+            background: linear-gradient(145deg, #ffffff 0%, #f7fafb 100%);
+            padding: 30px;
+            border: 1px solid #d9e4e8;
+            border-radius: 10px;
+            box-shadow: 0 10px 26px rgba(20, 54, 77, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .card-panel h2, .card-panel h3 {
+            color: #173f5b;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .dashboard-nav {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid #c8d8de;
+            margin-bottom: 22px;
+            overflow-x: auto;
+        }
+
+        .dashboard-nav button {
+            flex: 0 0 auto;
+            border: 0;
+            border-bottom: 3px solid transparent;
+            background: transparent;
+            color: #526777;
+            padding: 13px 18px 11px;
+            font: inherit;
+            font-weight: 650;
+            cursor: pointer;
+        }
+
+        .dashboard-nav button[aria-selected="true"] {
+            color: #173f5b;
+            border-bottom-color: #16836f;
+        }
+
+        .dashboard-panel[hidden] {
+            display: none;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+            align-items: start;
+        }
+
+        .chart-panel {
+            min-width: 0;
+            margin: 0;
+        }
+
+        .chart-panel h2 {
+            margin-bottom: 6px;
+        }
+
+        .chart-description {
+            color: #627482;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .chart-average {
+            color: #145a4e;
+            background: #e9f4f1;
+            border-left: 3px solid #16836f;
+            padding: 11px 13px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .bar-chart {
+            display: grid;
+            gap: 15px;
+        }
+
+        .bar-row {
+            display: grid;
+            grid-template-columns: minmax(76px, 100px) minmax(0, 1fr) 34px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bar-label, .bar-value {
+            color: #27445d;
+            font-size: 13px;
+        }
+
+        .bar-label {
+            overflow-wrap: anywhere;
+        }
+
+        .bar-value {
+            text-align: right;
+            font-weight: 700;
+        }
+
+        .bar-track {
+            height: 14px;
+            background: #e8eef1;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            min-width: 0;
+            background: #16836f;
+            transition: width 220ms ease;
+        }
+
+        .bar-fill.daily {
+            background: #d28a28;
+        }
+
+        .chart-empty {
+            color: #627482;
+            border: 1px dashed #b8c6cf;
+            padding: 22px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .grade-chart-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .grade-chart-controls label {
+            color: #27445d;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .grade-chart-controls select,
+        .form-control {
+            width: 100%;
+            min-height: 44px;
+            padding: 10px 12px;
+            border: 1px solid #b9c8d2;
+            border-radius: 4px;
+            background: #fff;
+            color: #17324d;
+            font: inherit;
+        }
+
+        .grade-chart-controls select {
+            max-width: 190px;
+        }
+
+        .family-student-controls,
+        .family-summary {
+            margin-bottom: 24px;
+        }
+
+        .family-student-controls {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            padding: 18px;
+            background: #eaf2f3;
+            border-left: 4px solid #1d806f;
+        }
+
+        .family-student-controls label {
+            display: grid;
+            gap: 7px;
+            color: #27445d;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .family-student-controls select {
+            width: 100%;
+            min-height: 44px;
+            padding: 10px 12px;
+            border: 1px solid #b9c8d2;
+            border-radius: 4px;
+            background: #fff;
+            color: #17324d;
+            font: inherit;
+        }
+
+        .family-summary h3 {
+            margin-bottom: 14px;
+            color: #17324d;
+            font-size: 17px;
+        }
+
+        .summary-metrics,
+        .summary-breakdowns {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .summary-metric,
+        .summary-breakdown {
+            min-width: 0;
+            padding: 16px;
+            background: #f2f6f7;
+            border-top: 3px solid #16836f;
+        }
+
+        .summary-metric span {
+            display: block;
+            color: #627482;
+            font-size: 12px;
+        }
+
+        .summary-metric strong {
+            display: block;
+            margin-top: 6px;
+            color: #17324d;
+            font-size: 25px;
+        }
+
+        .summary-breakdowns {
+            margin-top: 14px;
+        }
+
+        .summary-breakdown h4 {
+            margin-bottom: 10px;
+            color: #27445d;
+            font-size: 13px;
+        }
+
+        .summary-breakdown .bar-row {
+            grid-template-columns: minmax(58px, 0.8fr) minmax(48px, 1.4fr) 26px;
+            gap: 7px;
+            margin-bottom: 8px;
+            font-size: 11px;
+        }
+
+        .summary-breakdown .bar-track {
+            height: 10px;
+        }
+
+        .summary-message {
+            color: #627482;
+            font-size: 13px;
+        }
+
+        .form-intro {
+            color: #627482;
+            font-size: 14px;
+            margin: -10px 0 24px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 20px;
+        }
+
+        .form-group label {
+            color: #27445d;
+        }
+
+        .form-group input,
+        .form-group select {
+            border-color: #b9c8d2;
+            min-height: 44px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 4px;
+        }
+
+        .form-actions .btn-submit {
+            width: auto;
+            min-width: 210px;
+            margin-top: 0;
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .table-wrap table {
+            min-width: 840px;
+        }
+
+        .table-wrap th {
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.4px;
+        }
+
+        .row-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .row-action-button {
+            min-height: 34px;
+            padding: 6px 9px;
+            border: 1px solid #b9c8d2;
+            border-radius: 4px;
+            background: #fff;
+            color: #17324d;
+            cursor: pointer;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .row-action-button:hover {
+            background: #edf3f5;
+        }
+
+        .row-action-button.delete {
+            border-color: #e1b5b5;
+            color: #a52d2d;
+        }
+
+        .row-action-button.delete:hover {
+            background: #fff0f0;
+        }
+
+        .user-list-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin: 14px 0;
+            color: #526777;
+            font-size: 13px;
+        }
+
+        .user-list-toolbar input {
+            max-width: 360px;
+        }
+
+        #user-parent-students {
+            min-height: 132px;
+        }
+
+        #password-dialog {
+            width: min(92vw, 460px);
+            margin: auto;
+            padding: 28px;
+            border: 1px solid #dce6eb;
+            border-radius: 16px;
+            color: #17324d;
+            box-shadow: 0 24px 70px rgba(14, 45, 70, 0.28);
+        }
+
+        #password-dialog::backdrop {
+            background: rgba(13, 32, 46, 0.55);
+            backdrop-filter: blur(3px);
+        }
+
+        #password-dialog h2 {
+            margin-bottom: 10px;
+            color: #173f5b;
+        }
+
+        #password-dialog .dialog-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .row-editor {
+            width: 100%;
+            min-width: 104px;
+            min-height: 38px;
+            padding: 7px 8px;
+            border: 1px solid #9eb4c2;
+            border-radius: 4px;
+            color: #17324d;
+            font: inherit;
+            font-size: 13px;
+        }
+
+        .row-editor.motive {
+            min-width: 180px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(100deg, #173f5b, #1d806f);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(100deg, #102f47, #176b60);
+        }
+
+        .btn-logout {
+            background-color: #a64444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .table-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin: 14px 0;
+            color: #526777;
+        }
+
+        .table-toolbar label {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #27445d;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .table-toolbar select {
+            min-height: 38px;
+            padding: 7px 10px;
+            border: 1px solid #b9c8d2;
+            border-radius: 5px;
+            background: #fff;
+            color: #17324d;
+            font: inherit;
+        }
+
+        .btn-export {
+            border: 0;
+            border-radius: 5px;
+            padding: 10px 15px;
+            background: #1d806f;
+            color: #fff;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-export:hover {
+            background: #176b60;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #173f5b;
+            color: white;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .report-print-heading {
+            display: none;
+        }
+
+        @media print {
+            @page {
+                size: landscape;
+                margin: 14mm;
+            }
+
+            body {
+                display: block;
+                background: #fff;
+                color: #172b3a;
+            }
+
+            .navbar,
+            #login-view,
+            .user-bar,
+            .dashboard-nav,
+            #dashboard-resumen,
+            #dashboard-registro,
+            #parent-student-controls,
+            #family-summary,
+            .table-toolbar,
+            #history-actions-heading,
+            .management-only,
+            .connection-status {
+                display: none !important;
+            }
+
+            .dashboard-container {
+                display: block !important;
+                width: 100%;
+                max-width: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            #dashboard-historial,
+            #dashboard-historial[hidden] {
+                display: block !important;
+            }
+
+            #dashboard-historial .card-panel {
+                border: 0;
+                border-radius: 0;
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+                background: #fff;
+            }
+
+            .report-print-heading {
+                display: block;
+                margin-bottom: 18px;
+                padding-bottom: 12px;
+                border-bottom: 2px solid #1d806f;
+            }
+
+            .report-print-heading h1 {
+                margin-bottom: 5px;
+                color: #173f5b;
+                font-size: 20px;
+            }
+
+            .report-print-heading p {
+                color: #526777;
+                font-size: 11px;
+            }
+
+            .table-wrap {
+                overflow: visible;
+            }
+
+            .table-wrap table {
+                min-width: 0;
+                margin-top: 0;
+            }
+
+            th, td {
+                border-color: #cbd6dc;
+                padding: 7px;
+                font-size: 10px;
+            }
+
+            th {
+                background: #173f5b !important;
+                color: #fff !important;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #5b6e7e;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .navbar .connection-status {
+            color: #d5e4e9;
+        }
+
+        .connection-status::before {
+            content: "";
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #d89b22;
+        }
+
+        .connection-status.connected::before {
+            background: #18834a;
+        }
+
+        .connection-status.disconnected::before {
+            background: #c33c3c;
+        }
+
+        @media (max-width: 900px) {
+            .hero-login-container {
+                padding-inline: 28px;
+            }
+
+            .login-brand {
+                width: 100%;
+            }
+
+            .login-brand-logo {
+                left: 16px;
+                width: 28vw;
+            }
+
+            .login-brand-cusiana {
+                right: 16px;
+                width: 25vw;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 14px 18px;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+
+            .navbar .subtitle {
+                font-size: 12px;
+            }
+
+            .hero-login-container {
+                grid-template-columns: minmax(0, 1fr);
+                justify-items: center;
+                padding: 18px 16px 28px;
+            }
+
+            .login-brand {
+                position: relative;
+                inset: auto;
+                min-height: 0;
+                height: clamp(220px, 58vw, 360px);
+                width: min(100%, 520px);
+            }
+
+            .login-brand-image {
+                top: 0;
+                width: calc(50% - 8px);
+                height: 100%;
+                max-height: 100%;
+                transform: none;
+            }
+
+            .login-brand-logo {
+                left: 0;
+                filter: blur(1.5px);
+                opacity: 0.78;
+            }
+
+            .login-brand-cusiana {
+                right: 0;
+                filter: blur(1.5px);
+                opacity: 0.88;
+                border-radius: 6px;
+            }
+
+            .login-card {
+                max-width: 440px;
+            }
+
+            .dashboard-grid,
+            .form-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .user-bar {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .card-panel {
+                padding: 22px 18px;
+            }
+
+            .grade-chart-controls {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .family-student-controls,
+            .summary-metrics,
+            .summary-breakdowns {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .grade-chart-controls select {
+                max-width: none;
+            }
+
+            .form-actions .btn-submit {
+                width: 100%;
+            }
+
+            .table-toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .table-toolbar label {
+                justify-content: space-between;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .navbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .navbar .connection-status {
+                margin-left: 0;
+            }
+
+            .login-card {
+                padding: 26px 22px;
+            }
+
+            .login-card h2 {
+                font-size: 24px;
+            }
+        }
+
+        body {
+            background: #f2f6f9;
+            color: #183247;
+        }
+
+        .navbar {
+            min-height: 76px;
+            padding: 16px clamp(20px, 5vw, 72px);
+            background: linear-gradient(115deg, #12314a 0%, #174d60 100%);
+            border-bottom: 3px solid #36a58a;
+        }
+
+        .navbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 23px;
+            letter-spacing: 1.6px;
+        }
+
+        .navbar .sena-logo {
+            display: block;
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .navbar .subtitle {
+            margin-left: auto;
+            margin-right: 20px;
+        }
+
+        .navbar .connection-status {
+            padding: 8px 11px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .connection-status::before {
+            box-shadow: 0 0 0 3px rgba(216, 155, 34, 0.16);
+        }
+
+        .connection-status.connected::before {
+            background: #48d597;
+            box-shadow: 0 0 0 3px rgba(72, 213, 151, 0.18);
+        }
+
+        .hero-login-container {
+            background:
+                radial-gradient(ellipse at 50% 42%, rgba(255, 255, 255, 0.97), rgba(233, 241, 244, 0.82) 58%, rgba(218, 231, 235, 0.9)),
+                #eaf0f3;
+        }
+
+        .login-card {
+            max-width: 460px;
+            border: 1px solid #e0e8ed;
+            border-radius: 22px;
+            box-shadow: 0 24px 64px rgba(14, 45, 70, 0.18);
+        }
+
+        .login-card h2 {
+            color: #153c54;
+            letter-spacing: -0.5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-control,
+        .grade-chart-controls select,
+        .family-student-controls select,
+        .table-toolbar select {
+            border-color: #cbd8e0;
+            border-radius: 9px;
+            transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-control:focus,
+        .grade-chart-controls select:focus,
+        .family-student-controls select:focus,
+        .table-toolbar select:focus,
+        .row-editor:focus {
+            border-color: #1d806f;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(29, 128, 111, 0.14);
+        }
+
+        .btn-login,
+        .btn-submit,
+        .btn-export,
+        .btn-logout,
+        .row-action-button {
+            border-radius: 9px;
+            transition: background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+        }
+
+        .btn-login,
+        .btn-submit {
+            box-shadow: 0 7px 16px rgba(23, 63, 91, 0.16);
+        }
+
+        .dashboard-container {
+            max-width: 1380px;
+            margin: 32px auto 56px;
+        }
+
+        .user-bar {
+            min-height: 70px;
+            padding: 16px 22px;
+            border-color: #e0e8ed;
+            border-radius: 14px;
+            background: #fff;
+            box-shadow: 0 8px 24px rgba(20, 54, 77, 0.06);
+        }
+
+        .user-bar #welcome-message {
+            color: #28485f;
+        }
+
+        .user-bar #role-tag {
+            padding: 7px 11px;
+            border-radius: 999px;
+            background: #eaf5f2;
+            color: #176b60 !important;
+            font-size: 12px;
+        }
+
+        .btn-logout {
+            background: #a84242;
+        }
+
+        .btn-logout:hover {
+            background: #873434;
+            box-shadow: 0 5px 12px rgba(135, 52, 52, 0.2);
+        }
+
+        .dashboard-nav {
+            gap: 6px;
+            padding: 6px;
+            border: 1px solid #e0e8ed;
+            border-radius: 13px;
+            background: #fff;
+            box-shadow: 0 5px 16px rgba(20, 54, 77, 0.04);
+        }
+
+        .dashboard-nav button {
+            border: 0;
+            border-radius: 9px;
+            padding: 12px 18px;
+        }
+
+        .dashboard-nav button[aria-selected="true"] {
+            background: #eaf5f2;
+            color: #145c51;
+            box-shadow: inset 0 -2px #16836f;
+        }
+
+        .card-panel {
+            padding: clamp(22px, 3vw, 34px);
+            border-color: #e1e9ee;
+            border-radius: 16px;
+            background: #fff;
+            box-shadow: 0 10px 28px rgba(20, 54, 77, 0.06);
+        }
+
+        .card-panel h2,
+        .card-panel h3 {
+            letter-spacing: -0.25px;
+        }
+
+        .chart-average,
+        .family-student-controls {
+            border-radius: 9px;
+        }
+
+        .bar-track {
+            border-radius: 999px;
+        }
+
+        .bar-fill {
+            border-radius: inherit;
+            background: linear-gradient(90deg, #16836f, #35a58a);
+        }
+
+        .bar-fill.daily {
+            background: linear-gradient(90deg, #c47a19, #e0aa4d);
+        }
+
+        .table-wrap {
+            border: 1px solid #e0e8ed;
+            border-radius: 12px;
+            background: #fff;
+        }
+
+        .table-wrap table {
+            min-width: 1040px;
+            margin: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        th,
+        td {
+            border: 0;
+            border-bottom: 1px solid #e8edf1;
+            padding: 13px 14px;
+        }
+
+        th {
+            background: #173f5b;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f7fafb;
+        }
+
+        tbody tr:hover {
+            background: #eef6f5;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .table-toolbar {
+            padding: 5px 0 3px;
+        }
+
+        #history-count {
+            padding: 7px 11px;
+            border-radius: 999px;
+            background: #edf3f6;
+            color: #355469;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .btn-export {
+            background: #197d6c;
+        }
+
+        .btn-export:hover {
+            background: #126655;
+            box-shadow: 0 5px 12px rgba(29, 128, 111, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .row-action-button {
+            border-radius: 7px;
+        }
+
+        button:focus-visible {
+            outline: 3px solid rgba(29, 128, 111, 0.36);
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar .connection-status {
+                margin-left: auto;
+            }
+
+            .login-brand {
+                height: clamp(170px, 32vw, 250px);
+            }
+
+            .navbar .sena-logo {
+                width: 34px;
+                height: 34px;
+            }
+
+            .navbar .subtitle {
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .dashboard-container {
+                margin-top: 20px;
+            }
+
+            .dashboard-nav {
+                border-radius: 11px;
+            }
+
+            .user-bar {
+                padding: 15px 17px;
+                border-radius: 12px;
+            }
+
+            .table-wrap {
+                border-radius: 10px;
+            }
+
+            .user-list-toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .user-list-toolbar input {
+                max-width: none;
+            }
+        }
+
+        @media print {
+            .table-wrap {
+                border: 0;
+                border-radius: 0;
+            }
+
+            th,
+            td {
+                border: 1px solid #cbd6dc;
+                border-radius: 0;
+            }
+
+            tbody tr:nth-child(even),
+            tbody tr:hover {
+                background: #fff;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img class="sena-logo" src="img/logo_sena_ok.png" alt="SENA">
+            <span>S.R.A.T</span>
+        </div>
+        <div class="subtitle">Sistema de Registro Anti-llegadas Tardias</div>
+        <div id="connection-status" class="connection-status" role="status" aria-live="polite">Conectando con el servidor...</div>
+    </div>
+
+    <!-- VISTA DE LOGIN -->
+    <div id="login-view" class="hero-login-container">
+        <div class="login-brand" aria-hidden="true">
+            <img class="login-brand-image login-brand-logo" src="img/LOGO SRAT.jpg" alt="">
+            <img class="login-brand-image login-brand-cusiana" src="img/logo-institucion-cusiana.png" alt="">
+        </div>
+        <div class="login-card">
+            <h2>Ingreso al Sistema</h2>
+            <p>Seleccione su rol e ingrese sus credenciales institucionales.</p>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="role-select">Tipo de Usuario</label>
+                    <select id="role-select" required>
+                        <option value="Coordinador">Directivo / Coordinación</option>
+                        <option value="Docente">Docente</option>
+                        <option value="Estudiante">Estudiante</option>
+                        <option value="Padre">Padre de Familia</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="username-input">Usuario / Documento</label>
+                    <input type="text" id="username-input" placeholder="Ingrese número de documento" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password-input">Contraseña</label>
+                    <input type="password" id="password-input" placeholder="Ingrese contraseña" required>
+                </div>
+
+                <button type="submit" class="btn-login">Ingresar al Sistema</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- VISTA DEL PANEL PRINCIPAL (DASHBOARD) -->
+    <div id="dashboard-view" class="dashboard-container hidden">
+        
+        <div class="user-bar">
+            <span id="welcome-message"><b>Usuario:</b> Cargando...</span>
+            <span id="role-tag" style="color: #555;"><b>ROL:</b> --</span>
+            <button type="button" id="change-password-button" class="row-action-button hidden">Cambiar contraseña</button>
+            <button onclick="cerrarSesion()" class="btn-logout">Cerrar Sesión</button>
+        </div>
+
+        <nav class="dashboard-nav" role="tablist" aria-label="Secciones del sistema">
+            <button type="button" role="tab" data-dashboard-tab="resumen" aria-selected="true">Resumen y gráficas</button>
+            <button type="button" role="tab" data-dashboard-tab="registro" aria-selected="false">Registrar llegada</button>
+            <button type="button" role="tab" data-dashboard-tab="historial" aria-selected="false">Historial</button>
+            <button type="button" role="tab" data-dashboard-tab="usuarios" aria-selected="false" class="hidden">Usuarios</button>
+            <button type="button" role="tab" data-dashboard-tab="perfil" aria-selected="false" class="hidden">Mi resumen</button>
+        </nav>
+
+        <section id="dashboard-resumen" class="dashboard-panel" role="tabpanel">
+            <div class="dashboard-grid">
+                <article class="card-panel chart-panel">
+                    <h2>Llegadas tardías por grado</h2>
+                    <p class="chart-description">Cantidad acumulada de registros en cada grado.</p>
+                    <div id="chart-average" class="chart-average">Promedio por grado: --</div>
+                    <div id="chart-all-grades" class="bar-chart" aria-live="polite"></div>
+                </article>
+
+                <article class="card-panel chart-panel">
+                    <div class="grade-chart-controls">
+                        <div>
+                            <h2>Detalle por grado</h2>
+                            <label for="chart-grade-select">Seleccionar grado</label>
+                        </div>
+                        <select id="chart-grade-select" aria-label="Seleccionar grado para ver sus llegadas">
+                            <option value="">Elija un grado</option>
+                        </select>
+                    </div>
+                    <p id="grade-chart-caption" class="chart-description">El gráfico mostrará las llegadas por fecha del grado seleccionado.</p>
+                    <div id="chart-selected-grade" class="bar-chart" aria-live="polite">
+                        <div class="chart-empty">Seleccione un grado para ver el detalle.</div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section id="dashboard-registro" class="dashboard-panel hidden" role="tabpanel" hidden>
+            <div id="register-section" class="card-panel">
+                <h2>Registrar llegada tarde</h2>
+                <p class="form-intro">Complete los datos del estudiante y guarde el registro.</p>
+
+                <form id="tarde-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="grado-select">Grado / curso</label>
+                            <select class="form-control" id="grado-select" onchange="filtrarEstudiantesPorGrado()" required>
+                                <option value="">Seleccione un grado</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="student-select">Estudiante</label>
+                            <select class="form-control" id="student-select" required disabled>
+                                <option value="">Primero seleccione un grado</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="justificacion-select">¿Trae justificación?</label>
+                            <select class="form-control" id="justificacion-select" required>
+                                <option value="SI">Sí</option>
+                                <option value="NO">No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="motivo-select">Motivo de la tardanza</label>
+                            <select class="form-control" id="motivo-select" required onchange="evaluarMotivoOpcion()">
+                                <option value="">Seleccione un motivo</option>
+                                <option value="Problemas de transporte / Tráfico">Problemas de transporte / tráfico</option>
+                                <option value="Cita médica o salud">Cita médica o salud</option>
+                                <option value="Inclemencia del clima (Lluvia)">Lluvia o inclemencia del clima</option>
+                                <option value="Calamidad doméstica">Calamidad doméstica</option>
+                                <option value="Inconveniente personal / Familiar">Inconveniente personal o familiar</option>
+                                <option value="OTRA">Otro motivo</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group hidden" id="motivo-custom-group">
+                            <label for="motivo-custom-input">Especifique el motivo</label>
+                            <input class="form-control" type="text" id="motivo-custom-input" placeholder="Describa brevemente el motivo">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">Guardar llegada tarde</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section id="dashboard-usuarios" class="dashboard-panel hidden" role="tabpanel" hidden>
+            <div class="card-panel">
+                <h2>Administración de usuarios</h2>
+                <p class="form-intro">Cree y administre cuentas de Coordinación, docentes, estudiantes y padres de familia.</p>
+                <form id="user-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="user-document">Documento / usuario</label>
+                            <input class="form-control" id="user-document" name="documento" type="text" maxlength="20" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-name">Nombre completo</label>
+                            <input class="form-control" id="user-name" name="nombre" type="text" maxlength="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-role">Rol</label>
+                            <select class="form-control" id="user-role" name="rol" required>
+                                <option value="Coordinador">Coordinador (administrador)</option>
+                                <option value="Docente">Docente</option>
+                                <option value="Estudiante">Estudiante</option>
+                                <option value="Padre">Padre de familia</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-password">Contraseña</label>
+                            <input class="form-control" id="user-password" name="password" type="password" minlength="8" autocomplete="new-password">
+                        </div>
+                        <div class="form-group hidden" id="user-grade-group">
+                            <label for="user-grade">Grado / curso</label>
+                            <input class="form-control" id="user-grade" name="grado" type="text" maxlength="20" placeholder="Ej. 6A">
+                        </div>
+                        <div class="form-group hidden" id="parent-students-group">
+                            <label for="user-parent-students">Estudiantes vinculados</label>
+                            <select class="form-control" id="user-parent-students" name="estudiantes_documentos" multiple size="5"></select>
+                        </div>
+                    </div>
+                    <p class="form-intro" id="user-form-help">La contraseña debe tener al menos 8 caracteres. Para estudiantes, si se deja vacía al crear la cuenta, se usará el documento.</p>
+                    <div class="form-actions">
+                        <button type="submit" id="user-submit-button" class="btn-submit">Crear usuario</button>
+                        <button type="button" id="user-cancel-button" class="row-action-button hidden">Cancelar edición</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-panel">
+                <h3>Cuentas registradas</h3>
+                <div class="user-list-toolbar">
+                    <input class="form-control" id="users-search" type="search" placeholder="Buscar por documento, nombre o rol">
+                    <span id="users-count">0 usuarios</span>
+                    <div class="row-actions">
+                        <button type="button" id="users-previous-page" class="row-action-button">Anterior</button>
+                        <span id="users-page">Página 0 de 0</span>
+                        <button type="button" id="users-next-page" class="row-action-button">Siguiente</button>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>Documento</th><th>Nombre</th><th>Rol</th><th>Grado / estudiantes vinculados</th><th>Acciones</th></tr>
+                        </thead>
+                        <tbody id="users-body">
+                            <tr><td colspan="5">Cargando usuarios...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="dashboard-perfil" class="dashboard-panel hidden" role="tabpanel" hidden>
+            <div class="card-panel">
+                <h2>Resumen de llegadas</h2>
+                <p class="form-intro" id="personal-summary-caption">Consulta el resumen de llegadas de tu perfil.</p>
+                <div id="parent-student-controls" class="family-student-controls hidden">
+                    <label for="parent-grade-select">Grado del estudiante
+                        <select id="parent-grade-select">
+                            <option value="">Seleccione un grado</option>
+                        </select>
+                    </label>
+                    <label for="parent-student-select">Estudiante
+                        <select id="parent-student-select" disabled>
+                            <option value="">Seleccione un estudiante</option>
+                        </select>
+                    </label>
+                </div>
+                <section id="family-summary" class="family-summary" aria-live="polite">
+                    <div class="summary-metrics">
+                        <article class="summary-metric">
+                            <span id="current-period-label">Periodo actual</span>
+                            <strong id="current-period-count">--</strong>
+                        </article>
+                        <article class="summary-metric">
+                            <span>Mes actual</span>
+                            <strong id="current-month-count">--</strong>
+                        </article>
+                        <article class="summary-metric">
+                            <span>Semana actual</span>
+                            <strong id="current-week-count">--</strong>
+                        </article>
+                    </div>
+                    <div class="summary-breakdowns">
+                        <article class="summary-breakdown">
+                            <h4>Periodos del año</h4>
+                            <div id="period-summary-chart" class="bar-chart"></div>
+                        </article>
+                        <article class="summary-breakdown">
+                            <h4>Últimos seis meses</h4>
+                            <div id="month-summary-chart" class="bar-chart"></div>
+                        </article>
+                        <article class="summary-breakdown">
+                            <h4>Últimas ocho semanas</h4>
+                            <div id="week-summary-chart" class="bar-chart"></div>
+                        </article>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <section id="dashboard-historial" class="dashboard-panel hidden" role="tabpanel" hidden>
+            <div class="card-panel">
+                <h2>Historial de llegadas tardías</h2>
+                <div class="report-print-heading">
+                    <h1>Reporte de llegadas tardías - S.R.A.T</h1>
+                    <p id="report-print-date"></p>
+                </div>
+
+                <div class="table-wrap">
+                    <div class="table-toolbar">
+                        <span id="history-count">0 registros</span>
+                        <button type="button" id="export-report-button" class="btn-export">Imprimir / Guardar PDF</button>
+                        <label id="history-grade-filter" for="history-grade-select">Grado
+                            <select id="history-grade-select">
+                                <option value="">Todos los grados</option>
+                            </select>
+                        </label>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Estudiante</th>
+                                <th>Grado</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Justificación</th>
+                                <th>Motivo</th>
+                                <th>Registrado por</th>
+                                <th id="history-actions-heading" class="hidden">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reporte-body">
+                            <tr><td colspan="7" style="text-align: center;">No hay registros</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <dialog id="password-dialog">
+        <form id="password-change-form">
+            <h2>Cambiar contraseña</h2>
+            <p class="form-intro">Confirma tu contraseña actual y escribe una nueva de al menos 8 caracteres.</p>
+            <div class="form-group">
+                <label for="current-password">Contraseña actual</label>
+                <input class="form-control" id="current-password" type="password" autocomplete="current-password" required>
+            </div>
+            <div class="form-group">
+                <label for="new-password">Nueva contraseña</label>
+                <input class="form-control" id="new-password" type="password" minlength="8" autocomplete="new-password" required>
+            </div>
+            <div class="dialog-actions">
+                <button type="button" id="cancel-password-button" class="row-action-button">Cancelar</button>
+                <button type="submit" class="btn-submit">Guardar contraseña</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- LÓGICA DE JAVASCRIPT -->
+    <script>
+        const API_URL = '/api';
+        const API_HEALTH_URL = '/health';
+        
+        let usuarioActual = "";
+        let rolActual = "";
+        let docUsuario = "";
+        let tokenSesion = "";
+        let puedeEditarRegistros = false;
+        let todosLosEstudiantes = [];
+        let reporteActual = [];
+        let usuariosActuales = [];
+        let documentoUsuarioEditando = '';
+        let paginaUsuarios = 0;
+        const usuariosPorPagina = 25;
+
+        document.querySelectorAll('[data-dashboard-tab]').forEach(tab => {
+            tab.addEventListener('click', () => cambiarVistaDashboard(tab.dataset.dashboardTab));
+        });
+
+        document.getElementById('chart-grade-select').addEventListener('change', actualizarGraficaGradoSeleccionado);
+        document.getElementById('history-grade-select').addEventListener('change', renderizarHistorial);
+        document.getElementById('parent-grade-select').addEventListener('change', filtrarEstudiantesPadre);
+        document.getElementById('parent-student-select').addEventListener('change', cargarDatosEstudianteSeleccionado);
+        document.getElementById('reporte-body').addEventListener('click', manejarAccionRegistro);
+        document.getElementById('export-report-button').addEventListener('click', imprimirReportePDF);
+        document.getElementById('user-role').addEventListener('change', actualizarCamposUsuario);
+        document.getElementById('user-form').addEventListener('submit', guardarUsuario);
+        document.getElementById('user-cancel-button').addEventListener('click', cancelarEdicionUsuario);
+        document.getElementById('users-body').addEventListener('click', manejarAccionUsuario);
+        document.getElementById('users-search').addEventListener('input', () => {
+            paginaUsuarios = 0;
+            renderizarUsuarios();
+        });
+        document.getElementById('users-previous-page').addEventListener('click', () => {
+            paginaUsuarios = Math.max(0, paginaUsuarios - 1);
+            renderizarUsuarios();
+        });
+        document.getElementById('users-next-page').addEventListener('click', () => {
+            paginaUsuarios += 1;
+            renderizarUsuarios();
+        });
+        document.getElementById('change-password-button').addEventListener('click', () => {
+            document.getElementById('password-dialog').showModal();
+        });
+        document.getElementById('cancel-password-button').addEventListener('click', () => {
+            document.getElementById('password-change-form').reset();
+            document.getElementById('password-dialog').close();
+        });
+        document.getElementById('password-change-form').addEventListener('submit', cambiarContrasenaDocente);
+
+        function apiFetch(path, options = {}) {
+            const headers = new Headers(options.headers || {});
+            if (tokenSesion) headers.set('Authorization', `Bearer ${tokenSesion}`);
+            return fetch(`${API_URL}${path}`, { ...options, headers });
+        }
+
+        function cambiarVistaDashboard(vista) {
+            document.querySelectorAll('[data-dashboard-tab]').forEach(tab => {
+                const seleccionado = tab.dataset.dashboardTab === vista;
+                tab.setAttribute('aria-selected', seleccionado);
+            });
+
+            document.querySelectorAll('.dashboard-panel').forEach(panel => {
+                const seleccionado = panel.id === `dashboard-${vista}`;
+                panel.hidden = !seleccionado;
+                panel.classList.toggle('hidden', !seleccionado);
+            });
+        }
+
+        function configurarVistasPorRol() {
+            const esAdministracion = rolActual === 'Coordinador';
+            const esPersonal = ['Estudiante', 'Padre'].includes(rolActual);
+            const pestañasVisibles = esPersonal
+                ? ['perfil']
+                : ['resumen', 'registro', 'historial', ...(esAdministracion ? ['usuarios'] : [])];
+
+            document.querySelectorAll('[data-dashboard-tab]').forEach(tab => {
+                tab.classList.toggle('hidden', !pestañasVisibles.includes(tab.dataset.dashboardTab));
+            });
+            puedeEditarRegistros = esAdministracion;
+            document.getElementById('history-actions-heading').classList.toggle('hidden', !esAdministracion);
+            document.getElementById('change-password-button').classList.toggle('hidden', rolActual !== 'Docente');
+        }
+
+        function normalizarGrado(grado) {
+            return String(grado ?? '').trim();
+        }
+
+        function obtenerGrados() {
+            const grados = new Set(todosLosEstudiantes.map(estudiante => normalizarGrado(estudiante.grado)).filter(Boolean));
+            reporteActual.forEach(registro => {
+                const grado = normalizarGrado(registro.grado);
+                if (grado) grados.add(grado);
+            });
+            return [...grados].sort((a, b) => a.localeCompare(b, 'es', { numeric: true }));
+        }
+
+        function actualizarSelectorGradosGrafica() {
+            const selector = document.getElementById('chart-grade-select');
+            const gradoActual = selector.value;
+            selector.innerHTML = '<option value="">Elija un grado</option>';
+
+            obtenerGrados().forEach(grado => {
+                const opcion = document.createElement('option');
+                opcion.value = grado;
+                opcion.textContent = grado;
+                selector.appendChild(opcion);
+            });
+
+            if (obtenerGrados().includes(gradoActual)) selector.value = gradoActual;
+
+            const filtroHistorial = document.getElementById('history-grade-select');
+            const gradoFiltrado = filtroHistorial.value;
+            filtroHistorial.innerHTML = '<option value="">Todos los grados</option>';
+            obtenerGrados().forEach(grado => {
+                const opcion = document.createElement('option');
+                opcion.value = grado;
+                opcion.textContent = grado;
+                filtroHistorial.appendChild(opcion);
+            });
+            if (obtenerGrados().includes(gradoFiltrado)) filtroHistorial.value = gradoFiltrado;
+        }
+
+        function crearFilaGrafica(etiqueta, valor, maximo, clase = '') {
+            const fila = document.createElement('div');
+            fila.className = 'bar-row';
+
+            const texto = document.createElement('span');
+            texto.className = 'bar-label';
+            texto.textContent = etiqueta;
+
+            const pista = document.createElement('div');
+            pista.className = 'bar-track';
+            pista.setAttribute('role', 'img');
+            pista.setAttribute('aria-label', `${etiqueta}: ${valor} llegadas`);
+
+            const barra = document.createElement('div');
+            barra.className = `bar-fill ${clase}`.trim();
+            barra.style.width = `${maximo ? (valor / maximo) * 100 : 0}%`;
+            pista.appendChild(barra);
+
+            const cifra = document.createElement('span');
+            cifra.className = 'bar-value';
+            cifra.textContent = String(valor);
+
+            fila.append(texto, pista, cifra);
+            return fila;
+        }
+
+        function actualizarGraficaGeneral() {
+            const contenedor = document.getElementById('chart-all-grades');
+            const grados = obtenerGrados();
+            const conteos = new Map(grados.map(grado => [grado, 0]));
+
+            reporteActual.forEach(registro => {
+                const grado = normalizarGrado(registro.grado);
+                if (grado) conteos.set(grado, (conteos.get(grado) || 0) + 1);
+            });
+
+            contenedor.replaceChildren();
+            if (grados.length === 0) {
+                contenedor.innerHTML = '<div class="chart-empty">No hay grados disponibles para mostrar.</div>';
+                document.getElementById('chart-average').textContent = 'Promedio por grado: --';
+                return;
+            }
+
+            const total = [...conteos.values()].reduce((suma, cantidad) => suma + cantidad, 0);
+            const promedio = total / grados.length;
+            document.getElementById('chart-average').textContent = `Promedio por grado: ${promedio.toFixed(1)} llegadas`;
+            const maximo = Math.max(...conteos.values(), 1);
+            grados.forEach(grado => contenedor.appendChild(crearFilaGrafica(grado, conteos.get(grado), maximo)));
+        }
+
+        function actualizarGraficaGradoSeleccionado() {
+            const gradoSeleccionado = document.getElementById('chart-grade-select').value;
+            const contenedor = document.getElementById('chart-selected-grade');
+            const caption = document.getElementById('grade-chart-caption');
+            contenedor.replaceChildren();
+
+            if (!gradoSeleccionado) {
+                caption.textContent = 'El gráfico mostrará las llegadas por fecha del grado seleccionado.';
+                contenedor.innerHTML = '<div class="chart-empty">Seleccione un grado para ver el detalle.</div>';
+                return;
+            }
+
+            const conteos = new Map();
+            reporteActual
+                .filter(registro => normalizarGrado(registro.grado) === gradoSeleccionado)
+                .forEach(registro => {
+                    const fecha = String(registro.fecha ?? '').slice(0, 10);
+                    if (fecha) conteos.set(fecha, (conteos.get(fecha) || 0) + 1);
+                });
+
+            const fechas = [...conteos.keys()].sort((a, b) => b.localeCompare(a)).slice(0, 14).reverse();
+            caption.textContent = `Llegadas registradas por fecha para el grado ${gradoSeleccionado}.`;
+
+            if (fechas.length === 0) {
+                contenedor.innerHTML = '<div class="chart-empty">Este grado no tiene llegadas registradas.</div>';
+                return;
+            }
+
+            const maximo = Math.max(...fechas.map(fecha => conteos.get(fecha)), 1);
+            fechas.forEach(fecha => {
+                const fechaLocal = new Date(`${fecha}T00:00:00`);
+                const etiqueta = Number.isNaN(fechaLocal.getTime())
+                    ? fecha
+                    : new Intl.DateTimeFormat('es-CO', { day: '2-digit', month: 'short' }).format(fechaLocal);
+                contenedor.appendChild(crearFilaGrafica(etiqueta, conteos.get(fecha), maximo, 'daily'));
+            });
+        }
+
+        async function verificarConexionBackend() {
+            const estado = document.getElementById('connection-status');
+            estado.textContent = 'Conectando con el servidor...';
+            estado.classList.remove('connected', 'disconnected');
+
+            while (true) {
+                try {
+                    const respuesta = await fetch(API_HEALTH_URL);
+                    if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
+                    estado.textContent = 'Servidor conectado';
+                    estado.classList.add('connected');
+                    estado.classList.remove('disconnected');
+                    return;
+                } catch (error) {
+                    console.error('No se pudo conectar con el backend:', error);
+                    estado.textContent = 'Backend no disponible; ejecuta Iniciar SRAT.bat';
+                    estado.classList.add('disconnected');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
+            }
+        }
+
+        verificarConexionBackend();
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const role = document.getElementById('role-select').value;
+            const username = document.getElementById('username-input').value;
+            const password = document.getElementById('password-input').value;
+
+            try {
+                const res = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role, username, password })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    tokenSesion = data.token;
+                    usuarioActual = data.usuario.nombre;
+                    rolActual = data.usuario.rol;
+                    docUsuario = data.usuario.documento;
+
+                    if (!tokenSesion) throw new Error('El servidor no devolvió un token de sesión. Reinicie el backend.');
+
+                    document.getElementById('login-view').classList.add('hidden');
+                    document.getElementById('dashboard-view').classList.remove('hidden');
+
+                    document.getElementById('welcome-message').innerHTML = `<b>Usuario:</b> ${data.usuario.nombre}`;
+                    document.getElementById('role-tag').innerHTML = `<b>ROL:</b> ${data.usuario.rol}`;
+                    configurarVistasPorRol();
+                    document.getElementById('parent-student-controls').classList.toggle('hidden', rolActual !== 'Padre');
+                    document.getElementById('history-grade-filter').classList.toggle('hidden', ['Estudiante', 'Padre'].includes(rolActual));
+
+                    if (rolActual === 'Estudiante') {
+                        document.getElementById('personal-summary-caption').textContent = `Resumen personal de ${usuarioActual}.`;
+                        cambiarVistaDashboard('perfil');
+                        await cargarResumenEstudiante(docUsuario);
+                    } else if (rolActual === 'Padre') {
+                        document.getElementById('personal-summary-caption').textContent = 'Consulta únicamente el resumen de los estudiantes vinculados a tu cuenta.';
+                        cambiarVistaDashboard('perfil');
+                        await cargarEstudiantesVinculados();
+                    } else {
+                        cambiarVistaDashboard('resumen');
+                        await cargarEstudiantes();
+                        await Promise.all([
+                            cargarReporte(),
+                            ...(rolActual === 'Coordinador' ? [cargarUsuarios()] : []),
+                        ]);
+                    }
+                } else {
+                    alert(data.detail || "Credenciales incorrectas o el rol no coincide.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error de conexión con el servidor backend.");
+            }
+        });
+
+        function actualizarCamposUsuario() {
+            const rol = document.getElementById('user-role').value;
+            const esEstudiante = rol === 'Estudiante';
+            const esPadre = rol === 'Padre';
+            const password = document.getElementById('user-password');
+            const parentStudents = document.getElementById('user-parent-students');
+            document.getElementById('user-grade-group').classList.toggle('hidden', !esEstudiante);
+            document.getElementById('parent-students-group').classList.toggle('hidden', !esPadre);
+            document.getElementById('user-grade').required = esEstudiante;
+            parentStudents.required = esPadre;
+            password.required = !documentoUsuarioEditando && !esEstudiante;
+            password.placeholder = documentoUsuarioEditando
+                ? 'Dejar vacío para conservar la actual'
+                : esEstudiante ? 'Opcional; por defecto se usa el documento' : 'Mínimo 8 caracteres';
+            document.getElementById('user-form-help').textContent = esPadre
+                ? 'Selecciona uno o más estudiantes vinculados. Mantén Ctrl (Windows) al hacer clic para seleccionar varios.'
+                : documentoUsuarioEditando
+                    ? 'El documento no se puede cambiar. Deja la contraseña vacía para conservarla. Un estudiante usa su documento como contraseña inicial.'
+                    : 'Contraseña mínima de 8 caracteres. Para estudiantes, si se deja vacía, se usará el documento.';
+        }
+
+        function poblarSelectorEstudiantesUsuario(documentosSeleccionados = []) {
+            const selector = document.getElementById('user-parent-students');
+            selector.replaceChildren();
+            todosLosEstudiantes.forEach(estudiante => {
+                const opcion = document.createElement('option');
+                opcion.value = estudiante.documento;
+                opcion.textContent = `${estudiante.nombre} · ${estudiante.grado}`;
+                opcion.selected = documentosSeleccionados.includes(estudiante.documento);
+                selector.appendChild(opcion);
+            });
+        }
+
+        async function cargarUsuarios() {
+            const tbody = document.getElementById('users-body');
+            try {
+                const respuesta = await apiFetch('/usuarios');
+                const resultado = await respuesta.json();
+                if (!respuesta.ok) throw new Error(resultado.detail || 'No se pudo cargar la lista de usuarios');
+                usuariosActuales = resultado;
+                paginaUsuarios = 0;
+                renderizarUsuarios();
+            } catch (error) {
+                console.error('Error al cargar usuarios:', error);
+                tbody.replaceChildren();
+                const fila = document.createElement('tr');
+                fila.innerHTML = '<td colspan="5">No se pudo cargar la lista de usuarios.</td>';
+                tbody.appendChild(fila);
+                alert(error.message || 'No se pudo cargar la lista de usuarios.');
+            }
+        }
+
+        function renderizarUsuarios() {
+            const tbody = document.getElementById('users-body');
+            const termino = document.getElementById('users-search').value.trim().toLocaleLowerCase('es');
+            const filtrados = usuariosActuales.filter(cuenta => {
+                const nombresVinculados = (cuenta.estudiantes_documentos || [])
+                    .map(documento => todosLosEstudiantes.find(estudiante => estudiante.documento === documento)?.nombre || '')
+                    .join(' ');
+                return [cuenta.documento, cuenta.nombre, cuenta.rol, cuenta.grado, nombresVinculados]
+                    .some(valor => String(valor || '').toLocaleLowerCase('es').includes(termino));
+            });
+            const paginas = Math.ceil(filtrados.length / usuariosPorPagina);
+            paginaUsuarios = Math.min(paginaUsuarios, Math.max(0, paginas - 1));
+            const visibles = filtrados.slice(
+                paginaUsuarios * usuariosPorPagina,
+                (paginaUsuarios + 1) * usuariosPorPagina,
+            );
+
+            document.getElementById('users-count').textContent =
+                `${filtrados.length} ${filtrados.length === 1 ? 'usuario' : 'usuarios'}`;
+            document.getElementById('users-page').textContent =
+                `Página ${paginas ? paginaUsuarios + 1 : 0} de ${paginas}`;
+            document.getElementById('users-previous-page').disabled = paginaUsuarios === 0;
+            document.getElementById('users-next-page').disabled = paginaUsuarios + 1 >= paginas;
+            tbody.replaceChildren();
+
+            if (visibles.length === 0) {
+                const fila = document.createElement('tr');
+                fila.innerHTML = `<td colspan="5">${termino ? 'No se encontraron usuarios.' : 'No hay usuarios registrados.'}</td>`;
+                tbody.appendChild(fila);
+                return;
+            }
+
+            visibles.forEach(cuenta => {
+                const fila = document.createElement('tr');
+                const valorRol = cuenta.rol === 'Coordinador' ? 'Coordinador (administrador)' : cuenta.rol;
+                const estudiantesVinculados = (cuenta.estudiantes_documentos || [])
+                    .map(documento => todosLosEstudiantes.find(estudiante => estudiante.documento === documento)?.nombre || documento)
+                    .join(', ');
+                [cuenta.documento, cuenta.nombre, valorRol, cuenta.rol === 'Estudiante'
+                    ? (cuenta.grado || 'Sin grado')
+                    : cuenta.rol === 'Padre' ? estudiantesVinculados || 'Sin estudiantes vinculados' : '—']
+                    .forEach(valor => {
+                        const celda = document.createElement('td');
+                        celda.textContent = String(valor ?? '');
+                        fila.appendChild(celda);
+                    });
+
+                const acciones = document.createElement('td');
+                const editar = document.createElement('button');
+                editar.type = 'button';
+                editar.className = 'row-action-button';
+                editar.dataset.userAction = 'edit';
+                editar.dataset.documento = cuenta.documento;
+                editar.textContent = 'Editar';
+                const eliminar = document.createElement('button');
+                eliminar.type = 'button';
+                eliminar.className = 'row-action-button delete';
+                eliminar.dataset.userAction = 'delete';
+                eliminar.dataset.documento = cuenta.documento;
+                eliminar.textContent = 'Eliminar';
+                eliminar.disabled = cuenta.documento === docUsuario;
+                const grupoAcciones = document.createElement('div');
+                grupoAcciones.className = 'row-actions';
+                grupoAcciones.append(editar, eliminar);
+                acciones.appendChild(grupoAcciones);
+                fila.appendChild(acciones);
+                tbody.appendChild(fila);
+            });
+        }
+
+        async function guardarUsuario(evento) {
+            evento.preventDefault();
+            const documento = document.getElementById('user-document').value.trim();
+            const rol = document.getElementById('user-role').value;
+            const documentosVinculados = [...document.getElementById('user-parent-students').selectedOptions]
+                .map(opcion => opcion.value);
+            const payload = {
+                nombre: document.getElementById('user-name').value.trim(),
+                rol,
+                password: document.getElementById('user-password').value || null,
+                grado: document.getElementById('user-grade').value.trim() || null,
+                estudiantes_documentos: rol === 'Padre' ? documentosVinculados : [],
+            };
+            const editando = Boolean(documentoUsuarioEditando);
+            if (!editando) payload.documento = documento;
+
+            try {
+                const path = editando
+                    ? `/usuarios/${encodeURIComponent(documentoUsuarioEditando)}`
+                    : '/usuarios';
+                const respuesta = await apiFetch(path, {
+                    method: editando ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                const resultado = await respuesta.json();
+                if (!respuesta.ok) throw new Error(resultado.detail || 'No se pudo guardar el usuario');
+
+                cancelarEdicionUsuario();
+                await cargarEstudiantes();
+                await cargarUsuarios();
+                alert(resultado.mensaje || 'Usuario guardado correctamente.');
+            } catch (error) {
+                console.error('Error al guardar usuario:', error);
+                alert(error.message || 'No se pudo guardar el usuario.');
+            }
+        }
+
+        function iniciarEdicionUsuario(documento) {
+            const cuenta = usuariosActuales.find(usuario => usuario.documento === documento);
+            if (!cuenta) return;
+            documentoUsuarioEditando = documento;
+            document.getElementById('user-document').value = cuenta.documento;
+            document.getElementById('user-document').disabled = true;
+            document.getElementById('user-name').value = cuenta.nombre;
+            document.getElementById('user-role').value = cuenta.rol;
+            document.getElementById('user-password').value = '';
+            document.getElementById('user-grade').value = cuenta.grado || '';
+            poblarSelectorEstudiantesUsuario(cuenta.estudiantes_documentos || []);
+            document.getElementById('user-submit-button').textContent = 'Guardar cambios';
+            document.getElementById('user-cancel-button').classList.remove('hidden');
+            actualizarCamposUsuario();
+            document.getElementById('user-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function cancelarEdicionUsuario() {
+            documentoUsuarioEditando = '';
+            document.getElementById('user-form').reset();
+            document.getElementById('user-document').disabled = false;
+            document.getElementById('user-submit-button').textContent = 'Crear usuario';
+            document.getElementById('user-cancel-button').classList.add('hidden');
+            poblarSelectorEstudiantesUsuario();
+            actualizarCamposUsuario();
+        }
+
+        async function manejarAccionUsuario(evento) {
+            const boton = evento.target.closest('[data-user-action]');
+            if (!boton) return;
+            const documento = boton.dataset.documento;
+            if (boton.dataset.userAction === 'edit') {
+                iniciarEdicionUsuario(documento);
+                return;
+            }
+            if (!confirm(`¿Eliminar la cuenta de ${documento}? Esta acción no se puede deshacer.`)) return;
+
+            try {
+                const respuesta = await apiFetch(`/usuarios/${encodeURIComponent(documento)}`, { method: 'DELETE' });
+                const resultado = await respuesta.json();
+                if (!respuesta.ok) throw new Error(resultado.detail || 'No se pudo eliminar el usuario');
+                if (documentoUsuarioEditando === documento) cancelarEdicionUsuario();
+                await cargarUsuarios();
+                alert(resultado.mensaje || 'Usuario eliminado correctamente.');
+            } catch (error) {
+                console.error('Error al eliminar usuario:', error);
+                alert(error.message || 'No se pudo eliminar el usuario.');
+            }
+        }
+
+        async function cambiarContrasenaDocente(evento) {
+            evento.preventDefault();
+            const payload = {
+                contrasena_actual: document.getElementById('current-password').value,
+                contrasena_nueva: document.getElementById('new-password').value,
+            };
+            try {
+                const respuesta = await apiFetch('/mi-contrasena', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                const resultado = await respuesta.json();
+                if (!respuesta.ok) throw new Error(resultado.detail || 'No se pudo cambiar la contraseña');
+                document.getElementById('password-change-form').reset();
+                document.getElementById('password-dialog').close();
+                alert(resultado.mensaje || 'Contraseña actualizada correctamente.');
+            } catch (error) {
+                console.error('Error al cambiar contraseña:', error);
+                alert(error.message || 'No se pudo cambiar la contraseña.');
+            }
+        }
+
+        document.getElementById('user-role').dispatchEvent(new Event('change'));
+
+        async function cargarEstudiantes() {
+            try {
+                const res = await apiFetch('/estudiantes');
+                if (!res.ok) throw new Error((await res.json()).detail || 'No se pudo cargar la lista de estudiantes');
+                todosLosEstudiantes = await res.json();
+                poblarSelectorEstudiantesUsuario(
+                    [...document.getElementById('user-parent-students').selectedOptions].map(opcion => opcion.value)
+                );
+
+                const selectGrado = document.getElementById('grado-select');
+                selectGrado.innerHTML = '<option value="">Selecciona un grado</option>';
+
+                const gradosUnicos = [...new Set(todosLosEstudiantes.map(e => normalizarGrado(e.grado)).filter(Boolean))]
+                    .sort((a, b) => a.localeCompare(b, 'es', { numeric: true }));
+
+                gradosUnicos.forEach(grado => {
+                    const opt = document.createElement('option');
+                    opt.value = grado;
+                    opt.textContent = grado;
+                    selectGrado.appendChild(opt);
+                });
+
+                actualizarSelectorGradosGrafica();
+                actualizarGraficaGeneral();
+                actualizarGraficaGradoSeleccionado();
+
+                const selectEstudiante = document.getElementById('student-select');
+                selectEstudiante.innerHTML = '<option value="">Primero selecciona un grado</option>';
+                selectEstudiante.disabled = true;
+
+            } catch (err) {
+                console.error("Error al cargar lista de estudiantes:", err);
+            }
+        }
+
+        async function cargarEstudiantesVinculados() {
+            const selectorGrado = document.getElementById('parent-grade-select');
+            const selectorEstudiante = document.getElementById('parent-student-select');
+            try {
+                const respuesta = await apiFetch('/padres/estudiantes');
+                const estudiantes = await respuesta.json();
+                if (!respuesta.ok) throw new Error(estudiantes.detail || 'No se pudieron cargar los estudiantes vinculados');
+
+                todosLosEstudiantes = estudiantes;
+                selectorGrado.innerHTML = '<option value="">Seleccione un grado</option>';
+                const grados = [...new Set(estudiantes.map(estudiante => normalizarGrado(estudiante.grado)).filter(Boolean))]
+                    .sort((a, b) => a.localeCompare(b, 'es', { numeric: true }));
+                grados.forEach(grado => {
+                    const opcion = document.createElement('option');
+                    opcion.value = grado;
+                    opcion.textContent = grado;
+                    selectorGrado.appendChild(opcion);
+                });
+
+                selectorEstudiante.innerHTML = estudiantes.length
+                    ? '<option value="">Primero seleccione un grado</option>'
+                    : '<option value="">No hay estudiantes vinculados</option>';
+                selectorEstudiante.disabled = true;
+                if (estudiantes.length === 0) {
+                    limpiarHistorialFamiliar('No tienes estudiantes vinculados. Solicita al Coordinador que asocie tu cuenta con tus estudiantes.');
+                    return;
+                }
+                limpiarHistorialFamiliar();
+                if (estudiantes.length === 1) {
+                    selectorGrado.value = estudiantes[0].grado;
+                    filtrarEstudiantesPadre();
+                }
+            } catch (error) {
+                console.error('Error al cargar estudiantes vinculados:', error);
+                selectorGrado.innerHTML = '<option value="">No se pudo cargar la lista</option>';
+                selectorEstudiante.innerHTML = '<option value="">No se pudo cargar la lista de estudiantes</option>';
+                selectorEstudiante.disabled = true;
+                limpiarHistorialFamiliar('No se pudo cargar la lista de estudiantes vinculados.');
+            }
+        }
+
+        function filtrarEstudiantesPadre() {
+            const grado = document.getElementById('parent-grade-select').value;
+            const selector = document.getElementById('parent-student-select');
+            selector.innerHTML = '<option value="">Seleccione un estudiante</option>';
+
+            const estudiantes = todosLosEstudiantes.filter(estudiante => normalizarGrado(estudiante.grado) === grado);
+            estudiantes.forEach(estudiante => {
+                const opcion = document.createElement('option');
+                opcion.value = estudiante.documento;
+                opcion.textContent = estudiante.nombre;
+                selector.appendChild(opcion);
+            });
+            selector.disabled = !grado || estudiantes.length === 0;
+            limpiarHistorialFamiliar();
+            if (estudiantes.length === 1) {
+                selector.value = estudiantes[0].documento;
+                cargarDatosEstudianteSeleccionado();
+            }
+        }
+
+        async function cargarDatosEstudianteSeleccionado() {
+            const documento = document.getElementById('parent-student-select').value;
+            if (!documento) {
+                limpiarHistorialFamiliar();
+                return;
+            }
+            const estudiante = todosLosEstudiantes.find(item => item.documento === documento);
+            if (estudiante) {
+                document.getElementById('personal-summary-caption').textContent =
+                    `Resumen de ${estudiante.nombre} · Grado ${estudiante.grado}.`;
+            }
+            await cargarResumenEstudiante(documento);
+        }
+
+        function limpiarHistorialFamiliar(mensaje = 'Seleccione un estudiante para consultar su resumen.') {
+            document.getElementById('current-period-label').textContent = 'Periodo actual';
+            document.getElementById('current-period-count').textContent = '--';
+            document.getElementById('current-month-count').textContent = '--';
+            document.getElementById('current-week-count').textContent = '--';
+            ['period-summary-chart', 'month-summary-chart', 'week-summary-chart'].forEach(id => {
+                const aviso = document.createElement('div');
+                aviso.className = 'summary-message';
+                aviso.textContent = mensaje;
+                document.getElementById(id).replaceChildren(aviso);
+            });
+        }
+
+        function filtrarEstudiantesPorGrado() {
+            const gradoSeleccionado = document.getElementById('grado-select').value.trim();
+            const selectEstudiante = document.getElementById('student-select');
+
+            selectEstudiante.innerHTML = '';
+
+            if (!gradoSeleccionado) {
+                selectEstudiante.innerHTML = '<option value="">Primero selecciona un grado</option>';
+                selectEstudiante.disabled = true;
+                return;
+            }
+
+            const estudiantesFiltrados = todosLosEstudiantes.filter(
+                est => normalizarGrado(est.grado) === gradoSeleccionado
+            );
+
+            if (estudiantesFiltrados.length === 0) {
+                selectEstudiante.innerHTML = '<option value="">No hay estudiantes en este grado</option>';
+                selectEstudiante.disabled = true;
+                return;
+            }
+
+            selectEstudiante.disabled = false;
+            selectEstudiante.innerHTML = '<option value="">-- Seleccione un estudiante --</option>';
+
+            estudiantesFiltrados.forEach(est => {
+                const opt = document.createElement('option');
+                opt.value = est.documento;
+                opt.textContent = `${est.nombre} - Doc: ${est.documento}`;
+                selectEstudiante.appendChild(opt);
+            });
+        }
+
+        function evaluarMotivoOpcion() {
+            const motivoSelect = document.getElementById('motivo-select').value;
+            const customGroup = document.getElementById('motivo-custom-group');
+            const customInput = document.getElementById('motivo-custom-input');
+
+            if (motivoSelect === 'OTRA') {
+                customGroup.classList.remove('hidden');
+                customInput.required = true;
+            } else {
+                customGroup.classList.add('hidden');
+                customInput.required = false;
+                customInput.value = "";
+            }
+        }
+
+        document.getElementById('tarde-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const estudiante_documento = document.getElementById('student-select').value;
+            const justificacion = document.getElementById('justificacion-select').value;
+            const motivoSelect = document.getElementById('motivo-select').value;
+            const motivoCustom = document.getElementById('motivo-custom-input').value;
+            const motivoFinal = (motivoSelect === 'OTRA') ? motivoCustom : motivoSelect;
+
+            if (!estudiante_documento) {
+                alert("Por favor seleccione un estudiante.");
+                return;
+            }
+
+            try {
+                const res = await apiFetch('/registro-tarde', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        estudiante_documento,
+                        justificacion,
+                        motivo: motivoFinal
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert("¡Llegada tarde registrada con éxito!");
+                    document.getElementById('tarde-form').reset();
+                    document.getElementById('student-select').innerHTML = '<option value="">-- Primero seleccione un grado --</option>';
+                    document.getElementById('student-select').disabled = true;
+                    evaluarMotivoOpcion(); 
+                    cargarReporte();
+                } else {
+                    alert(data.detail || "Error al registrar la llegada tarde.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error al conectar con el servidor.");
+            }
+        });
+
+        async function cargarReporte(estudianteDocumento = '') {
+            try {
+                const consulta = estudianteDocumento
+                    ? `?estudiante_documento=${encodeURIComponent(estudianteDocumento)}`
+                    : '';
+                const res = await apiFetch(`/reporte-llegadas${consulta}`);
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'No se pudo cargar el historial');
+                const tbody = document.getElementById('reporte-body');
+                reporteActual = Array.isArray(data) ? data : [];
+                actualizarSelectorGradosGrafica();
+                actualizarGraficaGeneral();
+                actualizarGraficaGradoSeleccionado();
+                renderizarHistorial();
+            } catch (err) {
+                console.error("Error al cargar reporte:", err);
+            }
+        }
+
+        async function cargarResumenEstudiante(documento) {
+            if (!documento) return;
+            try {
+                const respuesta = await apiFetch(`/estudiantes/${encodeURIComponent(documento)}/resumen`);
+                const resumen = await respuesta.json();
+                if (!respuesta.ok) throw new Error(resumen.detail || 'No se pudo cargar el resumen');
+
+                const periodoActual = resumen.periodos.find(periodo => periodo.actual);
+                document.getElementById('current-period-label').textContent = periodoActual?.nombre || 'Periodo actual';
+                document.getElementById('current-period-count').textContent = String(resumen.total_periodo_actual ?? 0);
+                document.getElementById('current-month-count').textContent = String(resumen.total_mes_actual ?? 0);
+                document.getElementById('current-week-count').textContent = String(resumen.total_semana_actual ?? 0);
+
+                renderizarBarrasResumen('period-summary-chart', resumen.periodos.map(periodo => ({
+                    label: `${periodo.nombre}${periodo.actual ? ' actual' : ''}`,
+                    value: periodo.llegadas,
+                })));
+                renderizarBarrasResumen('month-summary-chart', resumen.meses.map(mes => ({
+                    label: mes.nombre,
+                    value: mes.llegadas,
+                })));
+                renderizarBarrasResumen('week-summary-chart', resumen.semanas.map(semana => ({
+                    label: new Intl.DateTimeFormat('es-CO', { day: '2-digit', month: 'short' })
+                        .format(new Date(`${semana.inicio}T00:00:00`)),
+                    value: semana.llegadas,
+                })));
+            } catch (error) {
+                console.error('Error al cargar resumen del estudiante:', error);
+                document.getElementById('current-period-count').textContent = '--';
+                document.getElementById('current-month-count').textContent = '--';
+                document.getElementById('current-week-count').textContent = '--';
+                ['period-summary-chart', 'month-summary-chart', 'week-summary-chart'].forEach(id => {
+                    document.getElementById(id).innerHTML = '<div class="summary-message">No se pudo cargar el resumen.</div>';
+                });
+            }
+        }
+
+        function renderizarBarrasResumen(id, elementos) {
+            const contenedor = document.getElementById(id);
+            contenedor.replaceChildren();
+            if (!elementos.length) {
+                contenedor.innerHTML = '<div class="summary-message">Sin periodos registrados.</div>';
+                return;
+            }
+
+            const maximo = Math.max(...elementos.map(elemento => elemento.value), 1);
+            elementos.forEach(elemento => {
+                contenedor.appendChild(crearFilaGrafica(elemento.label, elemento.value, maximo));
+            });
+        }
+
+        function crearEditorRegistro(registro) {
+            const fila = document.createElement('tr');
+            fila.dataset.registroId = registro.id;
+
+            const estudianteCell = document.createElement('td');
+            const estudianteSelect = document.createElement('select');
+            estudianteSelect.className = 'row-editor';
+            estudianteSelect.dataset.field = 'estudiante_documento';
+            todosLosEstudiantes.forEach(estudiante => {
+                const opcion = document.createElement('option');
+                opcion.value = estudiante.documento;
+                opcion.textContent = estudiante.nombre;
+                opcion.selected = estudiante.documento === registro.estudiante_documento;
+                estudianteSelect.appendChild(opcion);
+            });
+            estudianteCell.appendChild(estudianteSelect);
+            fila.appendChild(estudianteCell);
+
+            const gradoCell = document.createElement('td');
+            gradoCell.textContent = todosLosEstudiantes.find(
+                estudiante => estudiante.documento === estudianteSelect.value
+            )?.grado || registro.grado;
+            estudianteSelect.addEventListener('change', () => {
+                gradoCell.textContent = todosLosEstudiantes.find(
+                    estudiante => estudiante.documento === estudianteSelect.value
+                )?.grado || '';
+            });
+            fila.appendChild(gradoCell);
+
+            const fechaInput = document.createElement('input');
+            fechaInput.className = 'row-editor';
+            fechaInput.type = 'date';
+            fechaInput.dataset.field = 'fecha';
+            fechaInput.value = registro.fecha;
+            const fechaCell = document.createElement('td');
+            fechaCell.appendChild(fechaInput);
+            fila.appendChild(fechaCell);
+
+            const horaInput = document.createElement('input');
+            horaInput.className = 'row-editor';
+            horaInput.type = 'time';
+            horaInput.dataset.field = 'hora';
+            horaInput.value = registro.hora_editable || '00:00';
+            const horaCell = document.createElement('td');
+            horaCell.appendChild(horaInput);
+            fila.appendChild(horaCell);
+
+            const justificacionSelect = document.createElement('select');
+            justificacionSelect.className = 'row-editor';
+            justificacionSelect.dataset.field = 'justificacion';
+            [['SI', 'Sí'], ['NO', 'No']].forEach(([valor, etiqueta]) => {
+                const opcion = document.createElement('option');
+                opcion.value = valor;
+                opcion.textContent = etiqueta;
+                opcion.selected = String(registro.trae_justificacion).toUpperCase() === valor;
+                justificacionSelect.appendChild(opcion);
+            });
+            const justificacionCell = document.createElement('td');
+            justificacionCell.appendChild(justificacionSelect);
+            fila.appendChild(justificacionCell);
+
+            const motivoInput = document.createElement('input');
+            motivoInput.className = 'row-editor motive';
+            motivoInput.type = 'text';
+            motivoInput.dataset.field = 'motivo';
+            motivoInput.value = registro.motivo || '';
+            motivoInput.maxLength = 1000;
+            const motivoCell = document.createElement('td');
+            motivoCell.appendChild(motivoInput);
+            fila.appendChild(motivoCell);
+
+            const emisorCell = document.createElement('td');
+            emisorCell.textContent = registro.registrado_por
+                ? `${registro.registrado_por}${registro.registrado_por_rol ? ` · ${registro.registrado_por_rol}` : ''}`
+                : 'Sin dato histórico';
+            fila.appendChild(emisorCell);
+
+            const accionesCell = document.createElement('td');
+            accionesCell.className = 'management-only';
+            accionesCell.innerHTML = '<div class="row-actions"><button type="button" class="row-action-button" data-row-action="save">Guardar</button><button type="button" class="row-action-button" data-row-action="cancel">Cancelar</button></div>';
+            fila.appendChild(accionesCell);
+            return fila;
+        }
+
+        async function manejarAccionRegistro(evento) {
+            const boton = evento.target.closest('[data-row-action]');
+            if (!boton || !puedeEditarRegistros) return;
+
+            const fila = boton.closest('tr');
+            const registroId = fila.dataset.registroId;
+            const accion = boton.dataset.rowAction;
+            if (accion === 'edit') {
+                const registro = reporteActual.find(item => String(item.id) === registroId);
+                if (!registro) return;
+                fila.replaceWith(crearEditorRegistro(registro));
+                return;
+            }
+
+            if (accion === 'cancel') {
+                renderizarHistorial();
+                return;
+            }
+
+            if (accion === 'delete') {
+                if (!confirm('¿Está seguro de eliminar este registro de llegada tarde? Esta acción no se puede deshacer.')) return;
+                try {
+                    const respuesta = await apiFetch(`/registro-tarde/${encodeURIComponent(registroId)}`, { method: 'DELETE' });
+                    const resultado = await respuesta.json();
+                    if (!respuesta.ok) throw new Error(resultado.detail || 'No se pudo eliminar el registro');
+                    await cargarReporte();
+                } catch (error) {
+                    console.error('Error al eliminar registro:', error);
+                    alert(error.message || 'No se pudo eliminar el registro.');
+                }
+                return;
+            }
+
+            if (accion === 'save') {
+                const value = field => fila.querySelector(`[data-field="${field}"]`).value.trim();
+                const payload = {
+                    estudiante_documento: value('estudiante_documento'),
+                    fecha: value('fecha'),
+                    hora: value('hora'),
+                    justificacion: value('justificacion'),
+                    motivo: value('motivo'),
+                };
+                if (!payload.estudiante_documento || !payload.fecha || !payload.hora) {
+                    alert('Seleccione estudiante, fecha y hora antes de guardar.');
+                    return;
+                }
+
+                try {
+                    const respuesta = await apiFetch(`/registro-tarde/${encodeURIComponent(registroId)}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                    });
+                    const resultado = await respuesta.json();
+                    if (!respuesta.ok) throw new Error(resultado.detail || 'No se pudo actualizar el registro');
+                    await cargarReporte();
+                } catch (error) {
+                    console.error('Error al actualizar registro:', error);
+                    alert(error.message || 'No se pudo actualizar el registro.');
+                }
+            }
+        }
+
+        function renderizarHistorial() {
+            const gradoFiltro = document.getElementById('history-grade-select').value;
+            const registros = gradoFiltro
+                ? reporteActual.filter(registro => normalizarGrado(registro.grado) === gradoFiltro)
+                : reporteActual;
+            const tbody = document.getElementById('reporte-body');
+            tbody.replaceChildren();
+            document.getElementById('history-count').textContent = `${registros.length} ${registros.length === 1 ? 'registro' : 'registros'}`;
+
+            if (registros.length === 0) {
+                const fila = document.createElement('tr');
+                fila.innerHTML = `<td colspan="${puedeEditarRegistros ? 8 : 7}" style="text-align: center;">No hay llegadas tardías para mostrar</td>`;
+                tbody.appendChild(fila);
+                return;
+            }
+
+            registros.forEach(registro => {
+                const fila = document.createElement('tr');
+                fila.dataset.registroId = registro.id;
+                const emisor = registro.registrado_por
+                    ? `${registro.registrado_por}${registro.registrado_por_rol ? ` · ${registro.registrado_por_rol}` : ''}`
+                    : 'Sin dato histórico';
+                [registro.nombre, registro.grado, registro.fecha, registro.hora, registro.trae_justificacion, registro.motivo || 'N/A', emisor]
+                    .forEach(valor => {
+                        const celda = document.createElement('td');
+                        celda.textContent = String(valor ?? '');
+                        fila.appendChild(celda);
+                    });
+
+                const accionesCell = document.createElement('td');
+                accionesCell.className = puedeEditarRegistros ? 'management-only' : 'management-only hidden';
+                accionesCell.innerHTML = '<div class="row-actions"><button type="button" class="row-action-button" data-row-action="edit" aria-label="Editar registro">Editar</button><button type="button" class="row-action-button delete" data-row-action="delete" aria-label="Eliminar registro">Eliminar</button></div>';
+                fila.appendChild(accionesCell);
+                tbody.appendChild(fila);
+            });
+        }
+
+        function imprimirReportePDF() {
+            const fecha = new Intl.DateTimeFormat('es-CO', { dateStyle: 'long' }).format(new Date());
+            const grado = document.getElementById('history-grade-select').value;
+            document.getElementById('report-print-date').textContent =
+                `Generado el ${fecha} por ${usuarioActual} (${rolActual})${grado ? ` · Grado ${grado}` : ''}`;
+            window.print();
+        }
+
+        async function cerrarSesion() {
+            try {
+                if (tokenSesion) await apiFetch('/logout', { method: 'POST' });
+            } catch (error) {
+                console.error('No se pudo cerrar la sesión en el servidor:', error);
+            }
+
+            tokenSesion = '';
+            puedeEditarRegistros = false;
+            todosLosEstudiantes = [];
+            reporteActual = [];
+            usuariosActuales = [];
+            documentoUsuarioEditando = '';
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('login-view').classList.remove('hidden');
+            document.getElementById('login-form').reset();
+            document.querySelectorAll('[data-dashboard-tab]').forEach(tab => tab.classList.remove('hidden'));
+            document.getElementById('parent-student-controls').classList.add('hidden');
+            document.getElementById('history-grade-filter').classList.remove('hidden');
+            document.getElementById('history-actions-heading').classList.add('hidden');
+            document.getElementById('change-password-button').classList.add('hidden');
+            document.getElementById('users-body').replaceChildren();
+            document.getElementById('password-dialog').close();
+            cancelarEdicionUsuario();
+            cambiarVistaDashboard('resumen');
+        }
+    </script>
+</body>
+</html>

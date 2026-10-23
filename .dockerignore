@@ -1,0 +1,10 @@
+.git
+.venv
+__pycache__
+*.py[cod]
+.env
+.env.*
+database/srat_db.sql
+database/migracion_usuarios_y_roles.sql
+Backend.py
+corredor
