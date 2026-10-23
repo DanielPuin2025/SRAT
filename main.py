@@ -5,6 +5,8 @@ from pathlib import Path
 from typing import Literal
 import mysql.connector
 import calendar
+import hashlib
+import hmac
 import os
 import secrets
 import time
@@ -49,6 +51,83 @@ app.mount(
     StaticFiles(directory=PROJECT_DIR / "img"),
     name="images",
 )
+
+PASSWORD_SCRYPT_N = 2**14
+PASSWORD_SCRYPT_R = 8
+PASSWORD_SCRYPT_P = 1
+PASSWORD_SCRYPT_DKLEN = 64
+
+def hash_password(password: str) -> str:
+    salt = secrets.token_bytes(16)
+    derived_key = hashlib.scrypt(
+        password.encode("utf-8"),
+        salt=salt,
+        n=PASSWORD_SCRYPT_N,
+        r=PASSWORD_SCRYPT_R,
+        p=PASSWORD_SCRYPT_P,
+        dklen=PASSWORD_SCRYPT_DKLEN,
+    )
+    return f"$scrypt${PASSWORD_SCRYPT_N}${PASSWORD_SCRYPT_R}${PASSWORD_SCRYPT_P}${salt.hex()}${derived_key.hex()}"
+
+def verify_password(password: str, stored_password: str) -> bool:
+    if not stored_password.startswith("$scrypt$"):
+        return hmac.compare_digest(password, stored_password)
+
+    try:
+        _, algorithm, n, r, p, salt_hex, key_hex = stored_password.split("$")
+        if (
+            algorithm != "scrypt"
+            or int(n) != PASSWORD_SCRYPT_N
+            or int(r) != PASSWORD_SCRYPT_R
+            or int(p) != PASSWORD_SCRYPT_P
+        ):
+            return False
+        salt = bytes.fromhex(salt_hex)
+        expected_key = bytes.fromhex(key_hex)
+        actual_key = hashlib.scrypt(
+            password.encode("utf-8"),
+            salt=salt,
+            n=PASSWORD_SCRYPT_N,
+            r=PASSWORD_SCRYPT_R,
+            p=PASSWORD_SCRYPT_P,
+            dklen=PASSWORD_SCRYPT_DKLEN,
+        )
+        return hmac.compare_digest(actual_key, expected_key)
+    except (ValueError, TypeError):
+        return False
+
+@app.on_event("startup")
+def initialize_database():
+    schema_path = PROJECT_DIR / "database" / "schema.sql"
+    conn = None
+    cursor = None
+    try:
+        conn = mysql.connector.connect(**DB_CONFIG)
+        cursor = conn.cursor()
+        schema = schema_path.read_text(encoding="utf-8")
+        for statement in schema.split(";"):
+            if statement.strip():
+                cursor.execute(statement)
+
+        cursor.execute("SELECT id, password FROM usuarios")
+        legacy_passwords = [
+            (hash_password(password), user_id)
+            for user_id, password in cursor.fetchall()
+            if not password.startswith("$scrypt$")
+        ]
+        if legacy_passwords:
+            cursor.executemany(
+                "UPDATE usuarios SET password = %s WHERE id = %s",
+                legacy_passwords,
+            )
+        conn.commit()
+    except Exception as exc:
+        raise RuntimeError(f"No se pudo inicializar la base de datos SRAT: {exc}") from exc
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 class UserSession(BaseModel):
     documento: str
@@ -191,14 +270,14 @@ def login(data: LoginSchema):
     try:
         cursor = conn.cursor(dictionary=True)
         cursor.execute(
-            "SELECT * FROM usuarios WHERE documento = %s AND password = %s AND rol = %s", 
-            (data.username, data.password, data.role)
+            "SELECT * FROM usuarios WHERE documento = %s AND rol = %s",
+            (data.username, data.role),
         )
         user = cursor.fetchone()
         cursor.close()
         conn.close()
         
-        if not user:
+        if not user or not verify_password(data.password, user["password"]):
             raise HTTPException(status_code=401, detail="Credenciales incorrectas o rol no coincide")
 
         token = secrets.token_urlsafe(32)
@@ -262,7 +341,7 @@ def crear_estudiante(
         )
         cursor.execute(
             "INSERT INTO usuarios (documento, nombre, password, rol) VALUES (%s, %s, %s, %s)",
-            (documento, nombre, documento, "Estudiante"),
+            (documento, nombre, hash_password(documento), "Estudiante"),
         )
         conn.commit()
         return {
@@ -368,7 +447,7 @@ def crear_usuario(data: CrearUsuarioSchema, user: UserSession = Depends(get_curr
 
         cursor.execute(
             "INSERT INTO usuarios (documento, nombre, password, rol) VALUES (%s, %s, %s, %s)",
-            (documento, nombre, password, data.rol),
+            (documento, nombre, hash_password(password), data.rol),
         )
         user_id = cursor.lastrowid
 
@@ -437,7 +516,7 @@ def actualizar_usuario(
         if data.password:
             cursor.execute(
                 "UPDATE usuarios SET nombre = %s, rol = %s, password = %s WHERE documento = %s",
-                (nombre, data.rol, data.password, documento),
+                (nombre, data.rol, hash_password(data.password), documento),
             )
         else:
             cursor.execute(
@@ -541,14 +620,19 @@ def cambiar_contrasena_docente(
     if not conn:
         raise HTTPException(status_code=503, detail="No hay conexión con la base de datos")
 
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
     try:
         cursor.execute(
-            "UPDATE usuarios SET password = %s WHERE documento = %s AND password = %s AND rol = %s",
-            (data.contrasena_nueva, user.documento, data.contrasena_actual, "Docente"),
+            "SELECT password FROM usuarios WHERE documento = %s AND rol = %s",
+            (user.documento, "Docente"),
         )
-        if cursor.rowcount == 0:
+        cuenta = cursor.fetchone()
+        if not cuenta or not verify_password(data.contrasena_actual, cuenta["password"]):
             raise HTTPException(status_code=400, detail="La contraseña actual no coincide")
+        cursor.execute(
+            "UPDATE usuarios SET password = %s WHERE documento = %s AND rol = %s",
+            (hash_password(data.contrasena_nueva), user.documento, "Docente"),
+        )
         conn.commit()
         return {"status": "ok", "mensaje": "Contraseña actualizada correctamente"}
     except HTTPException:
