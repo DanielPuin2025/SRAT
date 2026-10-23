@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS `llegadas_tardes` (
   `motivo` text DEFAULT NULL,
   `registrado_por` varchar(100) DEFAULT NULL,
   `registrado_por_rol` varchar(50) DEFAULT NULL,
-  `fecha` date DEFAULT curdate(),
-  `hora` time DEFAULT curtime(),
+  `fecha` date DEFAULT (curdate()),
+  `hora` time DEFAULT (curtime()),
   PRIMARY KEY (`id`),
   KEY `estudiante_id` (`estudiante_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
